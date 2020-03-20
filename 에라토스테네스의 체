@@ -1,0 +1,43 @@
+//에라토스테네스의 체
+
+#include <iostream>
+#include <time.h>
+#include <math.h>
+using namespace std;
+bool memo[1000001];
+#define CLOCKS_PER_SEC ((clock_t)1000)
+#define TIME_UTC 1
+
+int main() {
+	time_t start, end;
+	int m, n;
+	cin >> m >> n;	
+	for (int i = 2; i <= n; i++) {
+		memo[i] = true;
+	}
+	memo[1] = false;
+
+	start = clock();
+	for (int i = 2; i < n; i++) {
+		if (memo[i]==false) continue;
+
+		for (int j = 2; j <= n; j++) {
+			if (j*i > n) break;
+			memo[j*i] = false;
+		}
+	}
+	/*for (int i = 2; i <n; i++) {
+		for (int j = m; j <= n; j++) {
+			if (i >= j) continue;
+			if (j%i == 0) memo[j] = false;
+		}
+	}*/
+	end = clock();
+	double result = (double)(end - start)/CLOCKS_PER_SEC;
+	cout << "수행시간: " << result;
+
+	/*for (int i = m; i <= n; i++) {
+		if (memo[i]) cout << i << '\n';
+	}*/
+	return 0;
+}
