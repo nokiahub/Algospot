@@ -1,0 +1,42 @@
+#include <iostream>
+using namespace std;
+int a[10] = {9,8,7,6,5,4,3,2,1,0};
+
+void merge(int start, int end){
+    
+    int mid = (start+end)/2;
+    int i = start, j = mid+1;
+    int k = start, tmp[10];
+    while(i<=mid && j<=end){
+        if(a[i]<a[j]){
+            tmp[k++] = a[i++];
+        }else{
+            tmp[k++] = a[j++];
+        }
+    }
+    
+    while(i<=mid){
+        tmp[k++] = a[i++];
+    }
+    while(j<=end){
+        tmp[k++] = a[j++];
+    }
+    for(int i = start ; i<=end ; i++)a[i] = tmp[i];
+    
+}
+void mergeSort(int start, int end){
+    
+    if(start==end) return;
+    
+    int mid = (start+end)/2;
+    mergeSort(start, mid);
+    mergeSort(mid+1, end);
+    merge(start, end);
+}
+
+int main(int argc, const char * argv[]) {
+    mergeSort(0, 9);
+    
+    for(int i = 0 ; i<=9 ; i++) printf("%d ", a[i]);
+    return 0;
+}
