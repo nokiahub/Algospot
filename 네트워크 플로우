@@ -1,0 +1,90 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#define MAX 7
+#define INF 1000000000
+using namespace std;
+
+int c[MAX][MAX], f[MAX][MAX], d[MAX];
+vector <int> a[MAX];
+int result = 0;
+
+void max_flow(int start, int end){
+    
+    while(true){
+        
+        queue <int> q;
+        q.push(start);
+        fill(d, d+MAX, -1);
+        while(!q.empty()){
+            int x = q.front();
+            q.pop();
+            
+            for(int i = 0 ; i<a[x].size(); i++){
+                int y = a[x][i];
+                if(c[x][y]-f[x][y]>0 && d[y] == -1){
+                    q.push(y);
+                    //경로 저장
+                    d[y] = x;
+                    if(y==end) break;
+                }
+            }
+        }
+        
+        //더이상 end까지 갈 수 있는 경로가 없을 때
+        if(d[end]==-1) break;
+        int flow = INF;
+        
+        //저장한 경로를 올라가며 최대 흐를 수 있는 flow값 탐색
+        for(int i = end ; i != start ; i = d[i]){
+            flow = min(flow, c[d[i]][i]-f[d[i]][i]);
+        }
+        
+        //해당 경로에 구한 flow 값을 더한다.
+        for(int i = end ; i != start ; i = d[i]){
+            f[d[i]][i] += flow;
+            f[i][d[i]] -= flow;
+        }
+        //총 flow를 저장하는 result에 flow값을 더한다.
+        result+=flow;
+    }
+}
+
+int main(){
+    a[1].push_back(2);
+    a[2].push_back(1);
+    a[1].push_back(4);
+    a[4].push_back(1);
+    c[1][2] = 12;
+    c[1][4] = 11;
+    
+    a[2].push_back(3);
+    a[2].push_back(4);
+    a[2].push_back(6);
+    a[3].push_back(2);
+    a[4].push_back(2);
+    a[6].push_back(2);
+    c[2][3] = 6;
+    c[2][4] = 3;
+    c[2][6] = 9;
+    
+    a[3].push_back(6);
+    a[6].push_back(3);
+    c[3][6] = 8;
+    
+    a[4].push_back(5);
+    a[5].push_back(4);
+    c[4][5] = 9;
+    
+    a[5].push_back(3);
+    a[5].push_back(6);
+    a[3].push_back(5);
+    a[5].push_back(5);
+    c[5][3] = 3;
+    c[5][6] = 4;
+    
+    max_flow(1, 6);
+    printf("%d", result);
+    return 0;
+}
