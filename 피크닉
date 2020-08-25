@@ -1,0 +1,53 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+int t, c, n, m;
+bool check[45];
+
+void count_pair(int selected, int index, int k, vector<pair<int, int>>& student){
+    if(selected == k){
+        
+        bool student_check[10];
+        fill(student_check, student_check+10, false);
+        
+        for(int i = 0 ; i<m ; i++){
+            if(check[i]){
+                int a = student[i].first;
+                int b = student[i].second;
+                if(student_check[a] || student_check[b]) return;
+                student_check[a] = true;
+                student_check[b] = true;
+            }
+        }
+        c+=1;
+        return;
+    }
+    if(index>=m) return;
+    check[index] = true;
+    count_pair(selected+1, index+1, k, student);
+    check[index] = false;
+    count_pair(selected, index+1, k, student);
+}
+
+int main() {
+    ios_base :: sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+    
+    cin >> t;
+    while(t--){
+        vector <pair<int, int>> student;
+        c=0;
+        cin >> n >> m;
+        for(int i = 0 ; i<m ; i++){
+            int a, b;
+            cin >> a >> b;
+            student.push_back(make_pair(a, b));
+        }
+        count_pair(0, 0, n/2, student);
+        cout << c <<'\n';
+    }
+    return 0;
+}
