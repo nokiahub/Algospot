@@ -1,0 +1,61 @@
+//가장 위, 가장 왼쪽의 빈 칸부터 채워 나간다.
+//올 수 있는 경우(4가지)를 dx, dy에 미리 정의한다.
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+int c, h, w, white=0;
+char a[20][20];
+int dx[4][2] = {{0, 1}, {0, 1}, {1, 1}, {1, 1}},  dy[4][2] = {{1, 0}, {1, 1}, {0, 1}, {-1, 0}};
+
+pair <int, int> get_start(){
+    for(int i = 0 ; i<h ; i++){
+        for(int j = 0 ; j<w ; j++)
+            if(a[i][j]=='.') return make_pair(i, j);
+    }
+    return make_pair(-1, -1);
+}
+
+int get_ways(int k){
+    if(k > white/3) return 0;
+    int ret = 0;
+    
+    pair <int, int> start  = get_start();
+    if(start.first==-1 && start.second==-1) return 1;
+    
+    int v = start.first;
+    int e = start.second;
+    
+    for(int i = 0 ; i<4 ; i++){
+        int x1 = v + dx[i][0]; int y1 = e+ dy[i][0];
+        int  x2 = v + dx[i][1]; int y2 = e + dy[i][1];
+            
+        if(x1<0 || x1>=h || y1<0 || y1>=w || a[x1][y1]=='#') continue;
+        if(x2<0 || x2>=h || y2<0 || y2>=w || a[x2][y2]=='#') continue;
+        a[v][e]='#'; a[x1][y1] = '#'; a[x2][y2] = '#';
+        ret+=get_ways(k+1);
+        a[v][e]='.'; a[x1][y1] = '.'; a[x2][y2] = '.';
+    }
+    return ret;
+}
+
+int main(){
+    cin >> c;
+    while(c--){
+        cin >> h >> w;
+        white = 0;
+        for(int i = 0 ; i<h ; i++){
+            string s;
+            cin >> s;
+            for(int j = 0 ;  j<w ; j++){
+                a[i][j] = s[j];
+                if(a[i][j]=='.') white++;
+            }
+        }
+        int answer = get_ways(0);
+        cout << answer << '\n';
+    }
+    return 0;
+}
