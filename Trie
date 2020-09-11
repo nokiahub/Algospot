@@ -1,0 +1,56 @@
+#include <cstring>
+#include <cstdio>
+#define ALPHABETS 26
+using namespace std;
+
+struct Trie{
+    bool is_terminal;
+    Trie* children[ALPHABETS];
+    
+    Trie() : is_terminal(false){
+        memset(children, 0, sizeof(children));
+    }
+    
+    ~Trie(){
+        for(int i = 0 ; i<ALPHABETS; i++){
+            if(children[i]) delete children[i];
+        }
+    }
+    
+    int char_to_num(char key){
+        return key-'a';
+    }
+
+    void insert(const char* key){
+        if(*key=='\0'){
+            is_terminal = true;
+        }else{
+            int index = char_to_num(*key);
+            if(!children[index]){
+                children[index] = new Trie();
+            }
+            children[index]->insert(key+1);
+        }
+    }
+    
+    bool find(const char * key){
+        if(*key==0) return this;
+        
+        int index = char_to_num(*key);
+        if(children[index]==0) return NULL;
+        return children[index]->find(key+1);
+    }
+};
+
+int main(){
+    Trie *root = new Trie();
+    const char *a = "abd";
+    root->insert(a);
+    printf("insert : \"%s\"\n\n", a);
+    
+    printf("%s : \"ab\"\n", root->find("ab")!=0 ? "Prefix Exist" : "Prefix Not Exist");
+    printf("%s : \"az\"\n", root->find("az")!=0 ? "Prefix Exist" : "Prefix Not Exist");
+    
+    delete root;
+    return 0;
+}
