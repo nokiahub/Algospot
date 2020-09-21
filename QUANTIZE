@@ -1,5 +1,7 @@
 #include <iostream>
 //문제 조건중 최대 s개니까 0~s 개까지 써도 된다.(반드시 s개 안써도 됌)
+//int a = int(0.5 + (double)5/2); -> 3
+//int a = int(0.5 + 5/2); -> 2
 
 #include <algorithm>
 #include <vector>
