@@ -1,0 +1,42 @@
+// MOD == 10 일 때 7 = 7, 13 = 3 (3 - 7 + 10)/10 = 4
+
+#include <iostream>
+#include <cstring>
+#define MAX 100
+#define MOD 1000000007
+using namespace std;
+
+int n, cache[MAX];
+
+int tiling(int x){
+    if(x <= 1) return 1;
+    
+    int &ret = cache[x];
+    if(ret != -1) return ret;
+    
+    ret = (tiling(x - 1) + tiling(x - 2))%MOD;
+    return ret;
+}
+
+int symmetric(int x){
+    int ret;
+    if(x%2 == 1)
+        return ret = (tiling(x) - tiling(x/2) + MOD)%MOD;
+    ret = tiling(x);
+    ret = (ret - tiling(x/2) + MOD)%MOD;
+    ret = (ret - tiling(x/2-1) + MOD)%MOD;
+    return ret;
+}
+
+int main(){
+    memset(cache, -1, sizeof(cache));
+    int c;
+    cin >> c;
+    while(c--){
+        memset(cache, -1, sizeof(cache));
+        cin >> n;
+        int answer = symmetric(n);
+        cout << answer <<'\n';
+    }
+    return 0;
+}
