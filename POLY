@@ -1,0 +1,44 @@
+#include <iostream>
+#include <cstring>
+#define MAX 101
+#define MOD 10000000
+using namespace std;
+
+int t, n, memo[MAX][MAX];
+
+int poly(int n, int first){
+    if(n - first == 0){
+        return 1;
+    }
+    
+    
+    int &ret = memo[n][first];
+    if(ret != -1) return ret;
+    
+    ret = 0;
+    
+    for(int i = 1 ; i <= n - first ; i++){
+        int add = first + i - 1;
+        add *= poly(n - first, i);
+        add %= MOD;
+        ret += add;
+        ret %= MOD;
+    }
+    return ret;
+}
+
+int main(){
+    cin >> t;
+    while(t--){
+        cin >> n;
+        memset(memo, -1, sizeof(memo));
+        
+        int answer = 0;
+        for(int i = 1 ; i <= n ; i++){
+            answer += poly(n, i);
+            answer %= MOD;
+        }
+        cout << answer %MOD <<'\n';
+    }
+    return 0;
+}
