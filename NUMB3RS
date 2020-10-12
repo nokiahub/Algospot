@@ -1,0 +1,57 @@
+#include <iostream>
+#include <cstring>
+#define MAX 51
+#define D_MAX 101
+using namespace std;
+
+int C, N, D, P ,Q;
+int arr[MAX][MAX];
+double memo[D_MAX][MAX], degree[MAX];
+
+double prob(int day, int node){
+    if(day == 0){
+        if(node == Q) return 1.0;
+        return 0.0;
+    }
+    
+    double &ret = memo[day][node];
+    if(ret > -0.5) return ret;
+    ret = 0.0;
+    
+    for(int i = 0 ; i < N ; i++){
+        if(arr[node][i] == 1){
+            ret += prob(day - 1, i)/degree[node];
+        }
+    }
+    
+    return ret;
+}
+
+
+int main(){
+    cin >> C;
+    while(C--){
+        cin >> N >> D >> P;
+        
+        memset(arr, 0, sizeof(arr));
+        memset(degree, 0, sizeof(degree));
+        
+        for(int i = 0 ; i < N ; i++){
+            for(int j = 0 ; j < N ; j++){
+                cin >> arr[i][j];
+                if(arr[i][j] == 1) degree[i]++;
+            }
+        }
+        
+        int  T;
+        cin >> T;
+        for(int i = 0 ; i < T ; i++){
+
+            memset(memo, -1, sizeof(memo));
+            cin >> Q;
+            double ans = prob(D, P);
+            printf("%.8f\n", ans);
+        }
+    }
+    return 0;
+}
