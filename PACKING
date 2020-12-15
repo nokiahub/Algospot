@@ -1,0 +1,82 @@
+//최적의 값을 구할뿐만 아니라 최적의 값을 이루고 있는 원소 갯수와 원소들의 이름까지 구하는 알고리즘
+//답을 역추적하는 재귀호출 알고리즘인 reconstruct 함수를 사용한다.
+
+#include <iostream>
+#include <cstring>
+#include <vector>
+using namespace std;
+
+int c, n, w, cache[100][1001];
+bool choices[100];
+typedef struct{
+    string name;
+    int v;
+    int p;
+}Thing;
+Thing things[100];
+
+int packing(int start, int volume){
+    if(start == n){
+        return 0;
+    }
+    
+    int &ret = cache[start][volume];
+    if(ret != -1){
+        return ret;
+    }
+    
+    int addPriority = things[start].p;
+    int addVolume = things[start].v;
+    
+    int a = 0, b = 0;
+    if(volume + addVolume <= w){
+        a = packing(start + 1, volume + addVolume) + addPriority;
+    }
+    b = packing(start + 1, volume);
+    
+    if(a > b){
+        ret = a;
+    }else{
+        ret = b;
+    }
+    return ret;
+}
+
+void reconstruct(int index, int weight, vector <string> & picked){
+    if(index == n){
+        return;
+    }
+    if(packing(index, weight) == packing(index + 1, weight)){
+        reconstruct(index + 1, weight, picked);
+    }else{
+        picked.push_back(things[index].name);
+        reconstruct(index + 1, weight + things[index].v, picked);
+    }
+    return;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+    
+    cin >> c;
+    while(c--){
+        cin >> n >> w;
+        for(int i = 0; i < n; i++){
+            Thing thing;
+            cin >> thing.name >> thing.v >> thing.p;
+            things[i] = thing;
+        }
+        memset(cache, -1, sizeof(cache));
+        memset(choices, false, sizeof(choices));
+        int sum = packing(0, 0);
+        vector <string> picked;
+        reconstruct(0, 0, picked);
+        cout << sum << ' ' << picked.size() << '\n';
+        for(int i = 0 ; i < picked.size() ; i++){
+            cout << picked[i] << '\n';
+        }
+    }
+    return 0;
+}
